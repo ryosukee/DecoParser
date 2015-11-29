@@ -1,8 +1,5 @@
 import argparse
 import inspect
-# TODO
-# option args でない普通の引数を扱う
-# option, args, type, default
 
 
 class Cmd:
