@@ -10,6 +10,8 @@ Hence, you only have to add decorator to a function requiring arguments and opti
 
   foo.py
   ```python
+import decoparser
+
 @decoparser.option('--h1')
 @decoparser.option('--h2')
 def hoge(h1, h2):
@@ -22,6 +24,7 @@ def fuga(f):
 hoge()
 fuga()
 ```
+
   `python foo.py -h`
   ```
 usage: foo.py [-h] --h2 H2 --h1 H1 --f F
@@ -39,6 +42,22 @@ optional arguments:
 hoge1 hoge2
 fuga
 ```
+
+2. You can use both command line option and normal argument in one function.
+  baz.py
+  ```python
+  import decoparser
+  
+  @decoparser.option('h')
+  def hoge(normal_arg, h):
+    print(normal_arg, h)
+  
+  hoge('normal')
+  ```
+  `python baz.py --h hoge`
+  ```
+  normal hoge
+  ```
 
 
 
