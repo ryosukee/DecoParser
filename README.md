@@ -10,33 +10,33 @@ Hence, you only have to add decorator to a function requiring arguments and opti
 
   foo.py
   ```python
-import decoparser
+  import decoparser
 
-@decoparser.option('--h1')
-@decoparser.option('--h2')
-def hoge(h1, h2):
-  print(h1, h2)
+  @decoparser.option('--h1')
+  @decoparser.option('--h2')
+  def hoge(h1, h2):
+    print(h1, h2)
 
-@decoparser.option('--f')
-def fuga(f):
-  print(f)
+  @decoparser.option('--f')
+  def fuga(f):
+    print(f)
 
-hoge()
-fuga()
-```
+  hoge()
+  fuga()
+  ```
 
   python foo.py -h
   ```
-usage: foo.py [-h] --h2 H2 --h1 H1 --f F
+  usage: foo.py [-h] --h2 H2 --h1 H1 --f F
 
-test of cmd parse
+  test of cmd parse
 
-optional arguments:
-  -h, --help  show this help message and exit
-  --h2 H2     test
-  --h1 H1     test
-  --f F       test
-```
+  optional arguments:
+    -h, --help  show this help message and exit
+    --h2 H2     test
+    --h1 H1     test
+    --f F       test
+  ```
 python foo.py --h1 hoge1 --h2 hoge2 --f fuga
  ```
 hoge1 hoge2
