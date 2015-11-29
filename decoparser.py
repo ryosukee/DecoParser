@@ -1,5 +1,4 @@
 import argparse
-import inspect
 
 
 class Cmd:
@@ -13,23 +12,50 @@ class Cmd:
             Cmd.args = Cmd.parser.parse_args()
             Cmd.first_call = False
 
-    def __init__(self, f, name, name2):
+    def __init__(self, f, name, name2, default):
         self.name = name
+        self.name2 = name2
         self.f = f
-        # args = inspect.getargspec(f)
+        self.default = default
+    
+    def add_option(self):
         try:
-            if name2 is not None:
+            if self.name2 is not None:
                 Cmd.parser.add_argument(
-                    name, name2,
-                    required=True,
-                    help='test',
+                    self.name, self.name2,
+                    default=self.default,
+                    help='option help',
                 )
             else:
                 Cmd.parser.add_argument(
-                    name,
-                    required=True,
-                    help='test',
+                    self.name,
+                    default=self.default,
+                    help='option help',
                 )
+        except argparse.ArgumentError as e:
+            print(e.__class__.__name__)
+            print('message:\n {0}'.format(e.message))
+            print(' there are many same options')
+            exit()
+
+    def add_argument(self):
+        try:
+            if self.default is None:
+                Cmd.parser.add_argument(
+                    self.name,
+                    default=self.default,
+                    metavar=self.name.upper(),
+                    help='arg help',
+                )
+            else:
+                Cmd.parser.add_argument(
+                    self.name,
+                    default=self.default,
+                    metavar=self.name.upper(),
+                    nargs='?',
+                    help='arg help',
+                )
+
         except argparse.ArgumentError as e:
             print(e.__class__.__name__)
             print('message:\n {0}'.format(e.message))
@@ -38,14 +64,23 @@ class Cmd:
 
     def __call__(self, *args, **kwargs):
         Cmd.get_args()
-        kname = self.name[2:]
+        kname = self.name[2:] if self.name.startswith('--') else self.name
         opname = Cmd.args.__dict__[kname]
         kwargs[kname] = opname
         self.f(*args, **kwargs)
 
 
-def option(name, name2=None):
+def option(name, name2=None, default=None):
     def iner(f):
-        cmd = Cmd(f, name, name2)
+        cmd = Cmd(f, name, name2, default)
+        cmd.add_option()
+        return cmd
+    return iner
+
+
+def argument(name, default=None):
+    def iner(f):
+        cmd = Cmd(f, name, None, default)
+        cmd.add_argument()
         return cmd
     return iner
