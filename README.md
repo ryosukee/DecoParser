@@ -1,5 +1,3 @@
-## This is not release version yet.
-
 DecoParser is a simple command line parser.  
 It can be used as decorator like [Click][].  
 The differences from [Click][] are below.  
