@@ -44,6 +44,7 @@ fuga
 ```
 
 2. You can use both type of argument - command line options and normal arguments - in one function.  
+
   baz.py
   ```python
   import decoparser
