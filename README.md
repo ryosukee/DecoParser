@@ -25,7 +25,7 @@ hoge()
 fuga()
 ```
 
-  `python foo.py -h`
+  python foo.py -h
   ```
 usage: foo.py [-h] --h2 H2 --h1 H1 --f F
 
@@ -37,7 +37,7 @@ optional arguments:
   --h1 H1     test
   --f F       test
 ```
-`python foo.py --h1 hoge1 --h2 hoge2 --f fuga`
+python foo.py --h1 hoge1 --h2 hoge2 --f fuga
  ```
 hoge1 hoge2
 fuga
@@ -54,7 +54,7 @@ fuga
   
   hoge('normal')
   ```
-  `python baz.py --h hoge`
+  python baz.py --h hoge
   ```
   normal hoge
   ```
