@@ -2,7 +2,7 @@ import argparse
 
 
 class Cmd:
-    parser = argparse.ArgumentParser(description='test of cmd parse')
+    parser = argparse.ArgumentParser()
     first_call = True
     args = None
 
@@ -12,15 +12,16 @@ class Cmd:
             Cmd.args = Cmd.parser.parse_args()
             Cmd.first_call = False
 
-    def __init__(self, f, name, name2, default):
+    def __init__(self, f, name, name2, default, help):
         self.name = name
         self.name2 = name2
         self.f = f
         self.default = default
+        self.help = help
     
     def add_option(self):
         args = [self.name]
-        kwargs = {'default': self.default, 'help': 'option help'}
+        kwargs = {'default': self.default, 'help': self.help}
         if self.name2 is not None:
             args.append(self.name2)
 
@@ -34,7 +35,7 @@ class Cmd:
 
     def add_argument(self):
         args = [self.name]
-        kwargs = {'metavar': self.name.upper(), 'help': 'arg help'}
+        kwargs = {'metavar': self.name.upper(), 'help': self.help}
         if self.default is not None:
             kwargs.update({'default': self.default, 'nargs': '?'})
         try:
@@ -53,17 +54,21 @@ class Cmd:
         self.f(*args, **kwargs)
 
 
-def option(name, name2=None, default=None):
+def option(name, name2=None, default=None, help=''):
     def iner(f):
-        cmd = Cmd(f, name, name2, default)
+        cmd = Cmd(f, name, name2, default, help)
         cmd.add_option()
         return cmd
     return iner
 
 
-def argument(name, default=None):
+def argument(name, default=None, help=''):
     def iner(f):
-        cmd = Cmd(f, name, None, default)
+        cmd = Cmd(f, name, None, default, help)
         cmd.add_argument()
         return cmd
     return iner
+
+
+def add_description(massage):
+    Cmd.parser.description = massage
