@@ -1,5 +1,5 @@
 DecoParser is a simple command line parser.  
-This is simply warping argparse as decorators like [Click][]. 
+This is simply warping argparse and argparse.add_argument as decorators like [Click][]. 
 The differences from [Click][] are below.  
 
 
