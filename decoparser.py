@@ -22,21 +22,32 @@ class Cmd:
             Cmd.args = Cmd.parser.parse_args()
             Cmd.first_call = False
 
-    def __init__(self, f, name, name2, default, help, type):
+    def __init__(self, f, name, name2, action, nargs, const, default, type,
+                 choices, required, help, metavar, dest):
+        self.f = f
         self.name = name
         self.name2 = name2
-        self.f = f
+        self.action = action
+        self.nargs = nargs
+        self.const = const
         self.default = default
-        self.help = help
         self.type = type
+        self.choices = choices
+        self.required = required
+        self.help = help
+        self.metavar = metavar
+        self.dest = dest
     
     def add_option(self):
         args = [self.name]
         kwargs = {'default': self.default, 'help': self.help}
         if self.name2 is not None:
             args.append(self.name2)
-        if self.type is not None:
-            kwargs.update({'type': self.type})
+        for kw in ['action', 'nargs', 'const', 'type', 'choices', 'required',
+                   'metavar', 'dest']:
+            slf = eval('self.{}'.format(kw))
+            if slf is not None:
+                kwargs.update({kw: slf})
         Cmd.pre_args.append((args, kwargs))
 
     def add_argument(self):
@@ -59,9 +70,12 @@ class Cmd:
             self.f(*args, **kwargs)
 
 
-def option(name, name2=None, default=None, help='', type=None):
+def option(name, name2=None, action=None, nargs=None, const=None, default=None,
+           type=None, choices=None, required=None, help=None, metavar=None,
+           dest=None):
     def iner(f):
-        cmd = Cmd(f, name, name2, default, help, type)
+        cmd = Cmd(f, name, name2, action, nargs, const, default, type, choices,
+                  required, help, metavar, dest)
         cmd.add_option()
         return cmd
     return iner
