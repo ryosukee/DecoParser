@@ -6,10 +6,19 @@ class Cmd:
     parser = argparse.ArgumentParser()
     first_call = True
     args = None
-
+    pre_args = list()
+    
     @classmethod
     def get_args(cls):
         if Cmd.first_call:
+            for args, kwargs in Cmd.pre_args:
+                try:
+                    Cmd.parser.add_argument(*args, **kwargs)
+                except argparse.ArgumentError as e:
+                    print(e.__class__.__name__)
+                    print('message:\n {0}'.format(e.message))
+                    print(' there are many same options')
+                    exit()
             Cmd.args = Cmd.parser.parse_args()
             Cmd.first_call = False
 
@@ -28,14 +37,7 @@ class Cmd:
             args.append(self.name2)
         if self.type is not None:
             kwargs.update({'type': self.type})
-
-        try:
-            Cmd.parser.add_argument(*args, **kwargs)
-        except argparse.ArgumentError as e:
-            print(e.__class__.__name__)
-            print('message:\n {0}'.format(e.message))
-            print(' there are many same options')
-            exit()
+        Cmd.pre_args.append((args, kwargs))
 
     def add_argument(self):
         args = [self.name]
@@ -44,13 +46,7 @@ class Cmd:
             kwargs.update({'default': self.default, 'nargs': '?'})
         if self.type is not None:
             kwargs.update({'type': self.type})
-        try:
-            Cmd.parser.add_argument(*args, **kwargs)
-        except argparse.ArgumentError as e:
-            print(e.__class__.__name__)
-            print('message:\n {0}'.format(e.message))
-            print(' there are many same options')
-            exit()
+        Cmd.pre_args.append((args, kwargs))
 
     def __call__(self, *args, **kwargs):
         Cmd.get_args()
@@ -84,4 +80,5 @@ def add_description(massage):
 
 
 def add_version(version):
-    Cmd.parser.add_argument('--version', action='version', version=version)
+    Cmd.pre_args.insert(0, (['--version'],
+                            {'action': 'version', 'version': version}))
