@@ -1,9 +1,10 @@
-DecoParser is a simple command line parser.  
+DecoParser is a simple command line parser, this is simply warping argparse.  
 It can be used as decorator like [Click][].  
 The differences from [Click][] are below.  
 
 
-1. You can use multiple function for each option and argument.  
+1. Distributed argument definition
+You can use multiple function for each option and argument.  
 Hence, you only have to add decorator to a function requiring arguments and options.  
 
   foo.py
@@ -41,7 +42,8 @@ hoge1 hoge2
 fuga
 ```
 
-2. You can use both type of argument - command line options and normal arguments - in one function.  
+2. Unify command line option and normal argument
+You can use both type of argument - command line options and normal arguments - in one function.  
 
   baz.py
   ```python
