@@ -19,19 +19,13 @@ class Cmd:
         self.default = default
     
     def add_option(self):
+        args = [self.name]
+        kwargs = {'default': self.default, 'help': 'option help'}
+        if self.name2 is not None:
+            args.append(self.name2)
+
         try:
-            if self.name2 is not None:
-                Cmd.parser.add_argument(
-                    self.name, self.name2,
-                    default=self.default,
-                    help='option help',
-                )
-            else:
-                Cmd.parser.add_argument(
-                    self.name,
-                    default=self.default,
-                    help='option help',
-                )
+            Cmd.parser.add_argument(*args, **kwargs)
         except argparse.ArgumentError as e:
             print(e.__class__.__name__)
             print('message:\n {0}'.format(e.message))
@@ -39,23 +33,12 @@ class Cmd:
             exit()
 
     def add_argument(self):
+        args = [self.name]
+        kwargs = {'metavar': self.name.upper(), 'help': 'arg help'}
+        if self.default is not None:
+            kwargs.update({'default': self.default, 'nargs': '?'})
         try:
-            if self.default is None:
-                Cmd.parser.add_argument(
-                    self.name,
-                    default=self.default,
-                    metavar=self.name.upper(),
-                    help='arg help',
-                )
-            else:
-                Cmd.parser.add_argument(
-                    self.name,
-                    default=self.default,
-                    metavar=self.name.upper(),
-                    nargs='?',
-                    help='arg help',
-                )
-
+            Cmd.parser.add_argument(*args, **kwargs)
         except argparse.ArgumentError as e:
             print(e.__class__.__name__)
             print('message:\n {0}'.format(e.message))
