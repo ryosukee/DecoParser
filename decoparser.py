@@ -2,6 +2,16 @@ import argparse
 import inspect
 
 
+class FileType:
+    def __init__(self, mode='r', encoding=None):
+        self.mode = mode
+        self.encoding = encoding
+
+    def __call__(self, arg):
+        self.name = arg
+        return self
+
+
 class Cmd:
     parser = argparse.ArgumentParser()
     first_call = True
@@ -38,6 +48,9 @@ class Cmd:
         self.help = help
         self.metavar = metavar
         self.dest = dest
+
+        if type is FileType:
+            self.type = None
     
     def add_option(self):
         args = [self.name]
@@ -64,14 +77,23 @@ class Cmd:
         Cmd.pre_args.append((args, kwargs))
 
     def __call__(self, *args, **kwargs):
+        def call(f, args, kwargs):
+            if inspect.getargspec(f).args[0] == 'self':
+                return f(self, *args, **kwargs)
+            else:
+                return f(*args, **kwargs)
+
         Cmd.get_args()
         kname = self.name[2:] if self.name.startswith('--') else self.name
         opname = Cmd.args.__dict__[kname]
-        kwargs[kname] = opname
-        if inspect.getargspec(self.f).args[0] == 'self':
-            return self.f(self, *args, **kwargs)
+        # file type
+        if isinstance(opname, FileType):
+            with open(opname.name, opname.mode, encoding=opname.encoding) as f:
+                kwargs[kname] = f
+                return call(self.f, args, kwargs)
         else:
-            return self.f(*args, **kwargs)
+            kwargs[kname] = opname
+            return call(self.f, args, kwargs)
 
 
 def option(name, name2=None, action=None, nargs=None, const=None, default=None,
