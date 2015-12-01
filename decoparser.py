@@ -31,6 +31,7 @@ class FilePath:
     def __repr__(self):
         return 'hoge'
 
+
 class Cmd:
     parser = argparse.ArgumentParser()
     first_call = True
