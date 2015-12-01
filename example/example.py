@@ -11,10 +11,12 @@ def hoge(age):
 
 
 @decoparser.option('--f', type=decoparser.FileType())
-def fuga(f):
+@decoparser.option('--f2', type=decoparser.FilePath(exists=True, absolute=True))
+def fuga(f, f2):
     global gf
     gf = f
     print('f: ', f.closed)
+    print(f2)
 
 gf = None
 hoge()
