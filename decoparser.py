@@ -1,5 +1,7 @@
+import os
+import sys
 import argparse
-import inspect
+from argparse import ArgumentTypeError
 
 
 class FileType:
@@ -11,6 +13,23 @@ class FileType:
         self.name = arg
         return self
 
+
+class FilePath:
+    def __init__(self, exists=False, absolute=False):
+        self.exists = exists
+        self.absolute = absolute
+
+    def __call__(self, arg):
+        if self.exists and not os.path.exists(arg):
+            errmsg = 'No such file or directory'
+            message = "can't open '{}': {}".format(arg, errmsg)
+            raise ArgumentTypeError(message)
+        if self.absolute:
+            return os.path.abspath(arg)
+        return arg
+
+    def __repr__(self):
+        return 'hoge'
 
 class Cmd:
     parser = argparse.ArgumentParser()
@@ -26,9 +45,9 @@ class Cmd:
                 try:
                     Cmd.parser.add_argument(*args, **kwargs)
                 except argparse.ArgumentError as e:
-                    print(e.__class__.__name__)
-                    print('message:\n {0}'.format(e.message))
-                    print(' there are many same options')
+                    print(e.__class__.__name__, file=sys.stderr)
+                    print('message:\n {0}'.format(e.message), file=sys.stderr)
+                    print(' there are many same options', file=sys.stderr)
                     exit()
             Cmd.args = Cmd.parser.parse_args()
             Cmd.first_call = False
@@ -77,12 +96,6 @@ class Cmd:
         Cmd.pre_args.append((args, kwargs))
 
     def __call__(self, *args, **kwargs):
-        def call(f, args, kwargs):
-            if inspect.getargspec(f).args[0] == 'self':
-                return f(self, *args, **kwargs)
-            else:
-                return f(*args, **kwargs)
-
         Cmd.get_args()
         kname = self.name[2:] if self.name.startswith('--') else self.name
         opname = Cmd.args.__dict__[kname]
@@ -90,10 +103,10 @@ class Cmd:
         if isinstance(opname, FileType):
             with open(opname.name, opname.mode, encoding=opname.encoding) as f:
                 kwargs[kname] = f
-                return call(self.f, args, kwargs)
+                return self.f(*args, **kwargs)
         else:
             kwargs[kname] = opname
-            return call(self.f, args, kwargs)
+            return self.f(*args, **kwargs)
 
 
 def option(name, name2=None, action=None, nargs=None, const=None, default=None,
