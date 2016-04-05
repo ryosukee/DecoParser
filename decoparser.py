@@ -71,7 +71,7 @@ class Cmd:
 
         if type is FileType:
             self.type = None
-    
+
     def add_option(self):
         args = [self.name]
         kwargs = {'default': self.default, 'help': self.help}
@@ -99,6 +99,7 @@ class Cmd:
     def __call__(self, *args, **kwargs):
         Cmd.get_args()
         kname = self.name[2:] if self.name.startswith('--') else self.name
+        kname = kname.replace('-', '_')
         opname = Cmd.args.__dict__[kname]
         # file type
         if isinstance(opname, FileType):
