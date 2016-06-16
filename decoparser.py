@@ -92,6 +92,10 @@ class Cmd:
                 assert False, 'if type is decoparser.Enum, choices should be enum.Enum type'
             del kwargs['type']
             kwargs['choices'] = list(self.choices.__members__)
+            if self.default is not None:
+                if not isinstance(self.default, self.choices):
+                    assert False, 'default value should be a value of Enum'
+                kwargs['default'] = self.default.name
 
         Cmd.pre_options.append((args, kwargs))
 
