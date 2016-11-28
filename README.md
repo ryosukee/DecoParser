@@ -5,7 +5,7 @@ The differences from [Click][] are below.
 
 1. Distributed argument definition.  
 You can use multiple function for each option and argument.  
-Hence, you only have to add decorator to a function requiring arguments and options.  
+Hence, you only have to add decorators to a function requiring arguments and options.  
 
   foo.py
   ```python
