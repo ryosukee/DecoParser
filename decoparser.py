@@ -77,6 +77,11 @@ class Cmd:
         if type is FileType:
             self.type = None
 
+        if default is not None:
+            if help is None:
+                self.help = ''
+            self.help += ' [default: {}]'.format(default)
+
     def add_option(self):
         args = [self.name]
         kwargs = {'default': self.default, 'help': self.help}
