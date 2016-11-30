@@ -3,9 +3,9 @@ This is simply warping argparse and argparse.add_argument as decorators like [Cl
 The differences from [Click][] are below.  
 
 
-1. Distributed argument definition
+1. Distributed argument definition.  
 You can use multiple function for each option and argument.  
-Hence, you only have to add decorator to a function requiring arguments and options.  
+Hence, you only have to add decorators to a function requiring arguments and options.  
 
   foo.py
   ```python
@@ -42,7 +42,7 @@ hoge1 hoge2
 fuga
 ```
 
-2. Unify command line option and normal argument
+2. Unify command line option and normal argument.  
 You can use both type of argument - command line options and normal arguments - in one function.  
 
   baz.py
